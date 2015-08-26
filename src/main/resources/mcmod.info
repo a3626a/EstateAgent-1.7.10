@@ -1,0 +1,21 @@
+{
+  "modListVersion": 2,
+  "modList": [{
+    "modid": "estateagent",
+    "name": "Estate Agent",
+    "description": "Chunk loading management for admin and players. Buy and sell chunks",
+    "version": "1.0.0",
+    "mcversion": "1.7.10",
+    "url": "http://oortcloud1996.tistory.com/",
+    "updateUrl": "",
+    "authorList": [ "Oort Cloud" ],
+    "credits": "Authored by oortcloud",
+    "logoFile": "",
+    "screenshots": [],
+    "parent": "",
+    "requiredMods": [ "Forge" ],
+    "dependencies": [],
+    "dependants": [],
+    "useDependencyInformation": true
+  }]
+}
