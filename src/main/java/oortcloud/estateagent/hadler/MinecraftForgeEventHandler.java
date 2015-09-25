@@ -34,8 +34,10 @@ public class MinecraftForgeEventHandler {
 			int num = 64;
 			float dx = 0.25F;
 
-			GL11.glDisable(GL11.GL_CULL_FACE);
+			
 			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glEnable(GL11.GL_DEPTH_TEST);
+			GL11.glDisable(GL11.GL_CULL_FACE);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			GL11.glShadeModel(GL11.GL_SMOOTH);
@@ -52,8 +54,6 @@ public class MinecraftForgeEventHandler {
 
 			if (list == null)
 				return;
-
-			
 			
 			for (ChunkCoordIntPairWithDimension i : list) {
 				GL11.glPushMatrix();
