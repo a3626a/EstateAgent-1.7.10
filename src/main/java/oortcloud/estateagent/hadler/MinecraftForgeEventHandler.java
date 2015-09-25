@@ -25,7 +25,7 @@ public class MinecraftForgeEventHandler {
 
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 		ItemStack heldItem = player.getHeldItem();
-		if (heldItem != null && heldItem.getItem() == ModItems.landbook) {
+		if (heldItem != null && (heldItem.getItem() == ModItems.landbook || heldItem.getItem() == ModItems.landdocument)) {
 			Tessellator tessellator = Tessellator.instance;
 			float partialTickTime = event.partialTicks;
 			int dim = Minecraft.getMinecraft().theWorld.provider.dimensionId;

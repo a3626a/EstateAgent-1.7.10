@@ -12,14 +12,11 @@ import oortcloud.network.PacketGeneralServer;
 
 import org.lwjgl.opengl.GL11;
 
-
 public class GUILandBook extends GuiScreen {
 
 	public static ArrayList<ChunkCoordIntPairWithDimension> chunks;
 
-	ResourceLocation backgroundimage = new ResourceLocation(
-			References.MODID.toLowerCase() + ":"
-					+ "textures/gui/guilandbook.png");
+	ResourceLocation backgroundimage = new ResourceLocation(References.MODID.toLowerCase() + ":" + "textures/gui/guilandbook.png");
 
 	private int xSize;
 	private int ySize;
@@ -46,21 +43,16 @@ public class GUILandBook extends GuiScreen {
 		int zeroY = (this.height - ySize) / 2;
 
 		for (int j = 0; j < 8; j++) {
-			this.buttonList.add(new GuiButtonSell(j, zeroX + 105, zeroY + 15
-					+ 15 * j, false));
+			this.buttonList.add(new GuiButtonSell(j, zeroX + 105, zeroY + 15 + 15 * j, false));
 		}
 		for (int j = 0; j < 8; j++) {
-			this.buttonList.add(new GuiButtonSell(8 + j, zeroX + 225, zeroY
-					+ 15 + 15 * j, false));
+			this.buttonList.add(new GuiButtonSell(8 + j, zeroX + 225, zeroY + 15 + 15 * j, false));
 		}
-		this.buttonList.add(new GuiButtonNext(16, zeroX + 25, zeroY + 133,
-				false));
-		this.buttonList.add(new GuiButtonNext(17, zeroX + 215, zeroY + 133,
-				true));
+		this.buttonList.add(new GuiButtonNext(16, zeroX + 25, zeroY + 133, false));
+		this.buttonList.add(new GuiButtonNext(17, zeroX + 215, zeroY + 133, true));
 
 		for (int i = 0; i < 16; i++) {
-			if ((this.chunks == null ? 0 : this.chunks.size()) <= this.page
-					* 16 + i) {
+			if ((this.chunks == null ? 0 : this.chunks.size()) <= this.page * 16 + i) {
 				((GuiButton) this.buttonList.get(i)).enabled = false;
 				((GuiButton) this.buttonList.get(i)).visible = false;
 			}
@@ -121,20 +113,14 @@ public class GUILandBook extends GuiScreen {
 		if (this.chunks != null) {
 			for (int j = 0; j < 8; j++) {
 				if (this.chunks.size() > this.page * 16 + j) {
-					ChunkCoordIntPairWithDimension i = this.chunks
-							.get(this.page * 16 + j);
-					this.fontRendererObj.drawString("DIM: " + i.dim + " ( "
-							+ i.chunkXPos + " , " + i.chunkZPos + " )",
-							(zeroX + 20), (zeroY + 15 + 15 * j), 1);
+					ChunkCoordIntPairWithDimension i = this.chunks.get(this.page * 16 + j);
+					this.fontRendererObj.drawString("DIM: " + i.dim + " ( " + i.chunkXPos + " , " + i.chunkZPos + " )", (zeroX + 20), (zeroY + 15 + 15 * j), 1);
 				}
 			}
 			for (int j = 0; j < 8; j++) {
 				if (this.chunks.size() > this.page * 16 + 8 + j) {
-					ChunkCoordIntPairWithDimension i = this.chunks
-							.get(this.page * 16 + 8 + j);
-					this.fontRendererObj.drawString("DIM: " + i.dim + " ( "
-							+ i.chunkXPos + " , " + i.chunkZPos + " )",
-							(zeroX + 140), (zeroY + 15 + 15 * j), 1);
+					ChunkCoordIntPairWithDimension i = this.chunks.get(this.page * 16 + 8 + j);
+					this.fontRendererObj.drawString("DIM: " + i.dim + " ( " + i.chunkXPos + " , " + i.chunkZPos + " )", (zeroX + 140), (zeroY + 15 + 15 * j), 1);
 				}
 			}
 		}
