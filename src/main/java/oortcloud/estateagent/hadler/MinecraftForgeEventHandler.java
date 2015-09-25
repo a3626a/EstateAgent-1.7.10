@@ -58,32 +58,46 @@ public class MinecraftForgeEventHandler {
 				GL11.glPushMatrix();
 				GL11.glTranslatef(i.chunkXPos * 16, 0, i.chunkZPos * 16);
 				if (i.dim == dim) {
-					GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
-					for (int j = 0; j < num; j++) {
-						GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-						GL11.glVertex3d(dx * j, -py, 0);
-						GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
-						GL11.glVertex3d(dx * j, 4 + 4 * Math.sin((16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 0);
+					if (!hasChunk(list, dim, i.chunkXPos, i.chunkZPos - 1)) {
+						GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
+						for (int j = 0; j <= num; j++) {
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+							GL11.glVertex3d(dx * j, -py, 0);
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
+							GL11.glVertex3d(dx * j, 4 + 4 * Math.sin((16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 0);
+						}
+						GL11.glEnd();
 					}
-					for (int j = 0; j < num; j++) {
-						GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-						GL11.glVertex3d(16, -py, dx * j);
-						GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
-						GL11.glVertex3d(16, 4 + 4 * Math.sin(4 * Math.PI + (16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), dx * j);
+					if (!hasChunk(list, dim, i.chunkXPos + 1, i.chunkZPos)) {
+						GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
+						for (int j = 0; j <= num; j++) {
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+							GL11.glVertex3d(16, -py, dx * j);
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
+							GL11.glVertex3d(16, 4 + 4 * Math.sin(4 * Math.PI + (16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), dx * j);
+						}
+						GL11.glEnd();
 					}
-					for (int j = 0; j < num; j++) {
-						GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-						GL11.glVertex3d(16 - dx * j, -py, 16);
-						GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
-						GL11.glVertex3d(16 - dx * j, 4 + 4 * Math.sin(8 * Math.PI + (16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 16);
+					if (!hasChunk(list, dim, i.chunkXPos, i.chunkZPos + 1)) {
+						GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
+						for (int j = 0; j <= num; j++) {
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+							GL11.glVertex3d(16 - dx * j, -py, 16);
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
+							GL11.glVertex3d(16 - dx * j, 4 + 4 * Math.sin(8 * Math.PI + (16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 16);
+						}
+						GL11.glEnd();
 					}
-					for (int j = 0; j <= num; j++) {
-						GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-						GL11.glVertex3d(0, -py, 16 - dx * j);
-						GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
-						GL11.glVertex3d(0, 4 + 4 * Math.sin(12 * Math.PI + (16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 16 - dx * j);
+					if (!hasChunk(list, dim, i.chunkXPos - 1, i.chunkZPos)) {
+						GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
+						for (int j = 0; j <= num; j++) {
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+							GL11.glVertex3d(0, -py, 16 - dx * j);
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
+							GL11.glVertex3d(0, 4 + 4 * Math.sin(12 * Math.PI + (16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 16 - dx * j);
+						}
+						GL11.glEnd();
 					}
-					GL11.glEnd();
 				}
 				GL11.glPopMatrix();
 			}
@@ -94,7 +108,15 @@ public class MinecraftForgeEventHandler {
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			// GL11.glEnable(GL11.GL_LIGHTING);
 		}
+	}
 
+	private boolean hasChunk(ArrayList<ChunkCoordIntPairWithDimension> list, int dim, int chunkX, int chunkZ) {
+		for (ChunkCoordIntPairWithDimension i : list) {
+			if (i.dim == dim && i.chunkXPos == chunkX && i.chunkZPos == chunkZ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
