@@ -14,23 +14,18 @@ public class ChunkLoadingCallback implements LoadingCallback {
 
 	@Override
 	public void ticketsLoaded(List<Ticket> tickets, World world) {
+		/*
+		EstateAgent.logger.info("Loading pre-existing chunk loading tickets:");
 		
 		Ticket ticket = null;
-
 		for (Ticket t : tickets) {
-			if (t.equals(References.MODID)) {
-				ticket = t;
+			if (t.getModId().equals(References.MODID)) {
+				EstateAgent.logger.info("Register a ticket for the world " + world.provider.dimensionId);
+				ChunkManager.tickets.put(world.provider.dimensionId, ticket);
+				return;
 			}
 		}
-		
-		if (ticket != null) {
-			ChunkManager.tickets.put(world.provider.dimensionId, ticket);
-		} else {
-				ChunkManager.tickets.put(world.provider.dimensionId,
-						ForgeChunkManager.requestTicket(EstateAgent.instance,
-								world, Type.NORMAL));
-		}
-		
+		*/
 	}
 
 }

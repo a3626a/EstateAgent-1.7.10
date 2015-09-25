@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
+import net.minecraftforge.common.ForgeChunkManager.Type;
+import oortcloud.estateagent.EstateAgent;
 
 public class ChunkManager {
 	public static HashMap<String, ArrayList<ChunkCoordIntPairWithDimension>> list;
@@ -17,13 +19,24 @@ public class ChunkManager {
 		tickets = new HashMap<Integer, ForgeChunkManager.Ticket>();
 	}
 
+	public static void requestTicket() {
+		EstateAgent.logger.info("Create new tickets for every world");
+		for (WorldServer i : MinecraftServer.getServer().worldServers) {
+			//if (!ChunkManager.tickets.containsKey(i.provider.dimensionId))
+			{
+				EstateAgent.logger.info("Create a new ticket for the world " + i.provider.dimensionId);
+				Ticket tic = ForgeChunkManager.requestTicket(EstateAgent.instance, i, Type.NORMAL);
+				EstateAgent.logger.info("is null?" + (tic==null));
+				ChunkManager.tickets.put(i.provider.dimensionId, tic);
+			}
+		}
+	}
+
 	public static int[] toIntArray(String player) {
 
-		ArrayList<ChunkCoordIntPairWithDimension> list = ChunkManager.list
-				.get(player);
+		ArrayList<ChunkCoordIntPairWithDimension> list = ChunkManager.list.get(player);
 		if (list == null) {
-			ChunkManager.list.put(player,
-					new ArrayList<ChunkCoordIntPairWithDimension>());
+			ChunkManager.list.put(player, new ArrayList<ChunkCoordIntPairWithDimension>());
 			return new int[] { 0 };
 		} else {
 			if (!list.isEmpty()) {

@@ -18,6 +18,9 @@ import oortcloud.network.HandlerGeneralClient;
 import oortcloud.network.HandlerGeneralServer;
 import oortcloud.network.PacketGeneralClient;
 import oortcloud.network.PacketGeneralServer;
+
+import org.apache.logging.log4j.Logger;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -25,12 +28,11 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION)
 public class EstateAgent {
@@ -43,24 +45,25 @@ public class EstateAgent {
 
 	public static SimpleNetworkWrapper simpleChannel;
 
+	public static Logger logger;
+	
+	public static ChunkSavedData chunkSaved;
+	
 	@Mod.EventHandler
 	public static void preInit(FMLPreInitializationEvent event) {
+		logger = event.getModLog();
 		ModItems.init();
+		ChunkManager.init();
 	}
 
 	@Mod.EventHandler
 	public static void Init(FMLInitializationEvent event) {
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GUIHandler());
-		ForgeChunkManager.setForcedChunkLoadingCallback(EstateAgent.instance,
-				new ChunkLoadingCallback());
+		ForgeChunkManager.setForcedChunkLoadingCallback(EstateAgent.instance, new ChunkLoadingCallback());
 
-		simpleChannel = NetworkRegistry.INSTANCE
-				.newSimpleChannel(References.MODNAME);
-		simpleChannel.registerMessage(HandlerGeneralServer.class,
-				PacketGeneralServer.class, 1, Side.SERVER);
-		simpleChannel.registerMessage(HandlerGeneralClient.class,
-				PacketGeneralClient.class, 2, Side.CLIENT);
-
+		simpleChannel = NetworkRegistry.INSTANCE.newSimpleChannel(References.MODNAME);
+		simpleChannel.registerMessage(HandlerGeneralServer.class, PacketGeneralServer.class, 1, Side.SERVER);
+		simpleChannel.registerMessage(HandlerGeneralClient.class, PacketGeneralClient.class, 2, Side.CLIENT);
 	}
 
 	@Mod.EventHandler
@@ -71,17 +74,21 @@ public class EstateAgent {
 
 	@EventHandler
 	public void serverLoad(FMLServerStartingEvent event) {
-		event.registerServerCommand(new CommandLandBook());
+		ChunkManager.requestTicket();
 		
-		ChunkManager.init();
+		event.registerServerCommand(new CommandLandBook());
 
 		MapStorage storage = MinecraftServer.getServer().worldServers[0].perWorldStorage;
-		ChunkSavedData result = (ChunkSavedData) storage.loadData(
-				ChunkSavedData.class, ChunkSavedData.key);
-		if (result == null) {
-			result = new ChunkSavedData();
-			storage.setData(ChunkSavedData.key, result);
+		chunkSaved = (ChunkSavedData) storage.loadData(ChunkSavedData.class, ChunkSavedData.key);
+		if (chunkSaved == null) {
+			chunkSaved = new ChunkSavedData();
+			storage.setData(ChunkSavedData.key, chunkSaved);
 		}
+	}
+	
+	@EventHandler
+	public void serverUnload(FMLServerStoppingEvent event) {
+		ChunkManager.init();
 	}
 
 }
