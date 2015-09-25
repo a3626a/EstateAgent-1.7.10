@@ -12,7 +12,7 @@ import oortcloud.network.PacketGeneralServer;
 
 import org.lwjgl.opengl.GL11;
 
-public class GUILandBook extends GuiScreen {
+public class GuiLandBook extends GuiScreen {
 
 	public static ArrayList<ChunkCoordIntPairWithDimension> chunks;
 
@@ -24,7 +24,7 @@ public class GUILandBook extends GuiScreen {
 
 	private int page;
 
-	public GUILandBook(String player) {
+	public GuiLandBook(String player) {
 		xSize = 256;
 		ySize = 158;
 		this.player = player;

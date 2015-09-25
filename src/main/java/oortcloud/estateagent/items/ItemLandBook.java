@@ -17,9 +17,10 @@ import net.minecraftforge.common.ForgeChunkManager;
 import oortcloud.estateagent.EstateAgent;
 import oortcloud.estateagent.chunk.ChunkCoordIntPairWithDimension;
 import oortcloud.estateagent.chunk.ChunkManager;
-import oortcloud.estateagent.gui.GUILandBook;
+import oortcloud.estateagent.gui.GuiLandBook;
 import oortcloud.estateagent.lib.References;
 import oortcloud.estateagent.lib.Strings;
+import oortcloud.estateagent.properties.ExtendedPropertyLand;
 import oortcloud.network.PacketGeneralClient;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -29,6 +30,7 @@ public class ItemLandBook extends Item {
 	public ItemLandBook() {
 		this.setCreativeTab(CreativeTabs.tabAllSearch);
 		this.setUnlocalizedName(References.RESOURCESPREFIX + Strings.itemLandBookName);
+		this.setCreativeTab(EstateAgent.tab);
 		ModItems.register(this);
 	}
 
@@ -38,10 +40,11 @@ public class ItemLandBook extends Item {
 		this.itemIcon = iconRegister.registerIcon(ModItems.getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		if (world.isRemote)
-			Minecraft.getMinecraft().displayGuiScreen(new GUILandBook(player.getCommandSenderName()));
+			Minecraft.getMinecraft().displayGuiScreen(new GuiLandBook(player.getCommandSenderName()));
 
 		return super.onItemRightClick(stack, world, player);
 	}
@@ -55,20 +58,27 @@ public class ItemLandBook extends Item {
 			ArrayList chunks = ChunkManager.list.get(player.getCommandSenderName());
 			ChunkCoordIntPairWithDimension chunk = new ChunkCoordIntPairWithDimension(world.provider.dimensionId, player.chunkCoordX, player.chunkCoordZ);
 
+			ExtendedPropertyLand property = (ExtendedPropertyLand) player.getExtendedProperties(Strings.extendedPropertiesKey);
+			
+			if (property == null)
+				return false;
+			
 			if (!chunks.contains(chunk)) {
-				chunks.add(chunk);
-				ChunkManager.forceChunk(chunk);
-				EstateAgent.chunkSaved.markDirty();
+				if (property.getForcableChunks() > chunks.size()) {
+					chunks.add(chunk);
+					ChunkManager.forceChunk(chunk);
+					EstateAgent.chunkSaved.markDirty();
 
-				String name = player.getCommandSenderName();
-				PacketGeneralClient msg = new PacketGeneralClient(0);
-				msg.setIntArray(ChunkManager.toIntArray(name));
-				EstateAgent.simpleChannel.sendTo(msg, MinecraftServer.getServer().getConfigurationManager().func_152612_a(name));
+					String name = player.getCommandSenderName();
+					PacketGeneralClient msg = new PacketGeneralClient(0);
+					msg.setIntArray(ChunkManager.toIntArray(name));
+					EstateAgent.simpleChannel.sendTo(msg, MinecraftServer.getServer().getConfigurationManager().func_152612_a(name));
+				}
 			} else {
 				chunks.remove(chunk);
 				ForgeChunkManager.unforceChunk(ChunkManager.tickets.get(chunk.dim), chunk);
 				EstateAgent.chunkSaved.markDirty();
-				
+
 				String name = player.getCommandSenderName();
 				PacketGeneralClient msg = new PacketGeneralClient(0);
 				msg.setIntArray(ChunkManager.toIntArray(name));

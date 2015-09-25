@@ -1,5 +1,8 @@
 package oortcloud.estateagent;
 
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -9,7 +12,6 @@ import oortcloud.estateagent.chunk.ChunkManager;
 import oortcloud.estateagent.chunk.ChunkSavedData;
 import oortcloud.estateagent.command.CommandLandBook;
 import oortcloud.estateagent.core.proxy.CommonProxy;
-import oortcloud.estateagent.gui.GUIHandler;
 import oortcloud.estateagent.hadler.FMLCommonEventHandler;
 import oortcloud.estateagent.hadler.MinecraftForgeEventHandler;
 import oortcloud.estateagent.items.ModItems;
@@ -33,6 +35,7 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION)
 public class EstateAgent {
@@ -49,6 +52,14 @@ public class EstateAgent {
 	
 	public static ChunkSavedData chunkSaved;
 	
+	public static CreativeTabs tab = new CreativeTabs("tabEstateAgent") {
+		@Override
+		@SideOnly(Side.CLIENT)
+		public Item getTabIconItem() {
+			return ModItems.landbook;
+		}
+	};
+	
 	@Mod.EventHandler
 	public static void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
@@ -58,7 +69,6 @@ public class EstateAgent {
 
 	@Mod.EventHandler
 	public static void Init(FMLInitializationEvent event) {
-		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GUIHandler());
 		ForgeChunkManager.setForcedChunkLoadingCallback(EstateAgent.instance, new ChunkLoadingCallback());
 
 		simpleChannel = NetworkRegistry.INSTANCE.newSimpleChannel(References.MODNAME);
