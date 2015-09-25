@@ -35,13 +35,13 @@ public class MinecraftForgeEventHandler {
 			float dx = 0.25F;
 
 			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glEnable(GL11.GL_DEPTH_TEST);
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			GL11.glShadeModel(GL11.GL_SMOOTH);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
+			GL11.glDepthMask(false);
+			
 			double px = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTickTime;
 			double py = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTickTime;
 			double pz = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTickTime;
@@ -106,6 +106,7 @@ public class MinecraftForgeEventHandler {
 
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			GL11.glDepthMask(true);
 			// GL11.glEnable(GL11.GL_LIGHTING);
 		}
 	}
