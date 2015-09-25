@@ -34,15 +34,14 @@ public class MinecraftForgeEventHandler {
 			int num = 64;
 			float dx = 0.25F;
 
-			
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glEnable(GL11.GL_DEPTH_TEST);
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			GL11.glShadeModel(GL11.GL_SMOOTH);
-			//GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
 			double px = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTickTime;
 			double py = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTickTime;
 			double pz = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTickTime;
@@ -54,35 +53,35 @@ public class MinecraftForgeEventHandler {
 
 			if (list == null)
 				return;
-			
+
 			for (ChunkCoordIntPairWithDimension i : list) {
 				GL11.glPushMatrix();
-				GL11.glTranslatef(i.chunkXPos * 16, -4, i.chunkZPos * 16);
+				GL11.glTranslatef(i.chunkXPos * 16, 0, i.chunkZPos * 16);
 				if (i.dim == dim) {
 					GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
 					for (int j = 0; j < num; j++) {
 						GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-						GL11.glVertex3d(dx * j, -8, 0);
+						GL11.glVertex3d(dx * j, -py, 0);
 						GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
-						GL11.glVertex3d(dx * j, 8+4*Math.sin((16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 0);
+						GL11.glVertex3d(dx * j, 4 + 4 * Math.sin((16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 0);
 					}
 					for (int j = 0; j < num; j++) {
 						GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-						GL11.glVertex3d(16, -8, dx * j);
+						GL11.glVertex3d(16, -py, dx * j);
 						GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
-						GL11.glVertex3d(16, 8+4*Math.sin(4 * Math.PI + (16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), dx * j);
+						GL11.glVertex3d(16, 4 + 4 * Math.sin(4 * Math.PI + (16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), dx * j);
 					}
 					for (int j = 0; j < num; j++) {
 						GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-						GL11.glVertex3d(16 - dx * j, -8, 16);
+						GL11.glVertex3d(16 - dx * j, -py, 16);
 						GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
-						GL11.glVertex3d(16 - dx * j, 8+4*Math.sin(8 * Math.PI + (16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 16);
+						GL11.glVertex3d(16 - dx * j, 4 + 4 * Math.sin(8 * Math.PI + (16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 16);
 					}
 					for (int j = 0; j <= num; j++) {
 						GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-						GL11.glVertex3d(0, -8, 16 - dx * j);
+						GL11.glVertex3d(0, -py, 16 - dx * j);
 						GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
-						GL11.glVertex3d(0, 8+4*Math.sin(12 * Math.PI + (16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 16 - dx * j);
+						GL11.glVertex3d(0, 4 + 4 * Math.sin(12 * Math.PI + (16 * Math.PI / 64.0) * dx * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 16 - dx * j);
 					}
 					GL11.glEnd();
 				}
