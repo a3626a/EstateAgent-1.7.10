@@ -22,6 +22,7 @@ import oortcloud.estateagent.lib.References;
 import oortcloud.estateagent.lib.Strings;
 import oortcloud.estateagent.properties.ExtendedPropertyLand;
 import oortcloud.network.PacketGeneralClient;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -40,49 +41,50 @@ public class ItemLandBook extends Item {
 		this.itemIcon = iconRegister.registerIcon(ModItems.getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
 	}
 
-	@SideOnly(Side.CLIENT)
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-		if (world.isRemote)
-			Minecraft.getMinecraft().displayGuiScreen(new GuiLandBook(player.getCommandSenderName()));
-
+		if (world.isRemote) {
+			EstateAgent.proxy.openGUI(new GuiLandBook());
+		} else {
+			/*
+			 * String name = player.getCommandSenderName(); PacketGeneralClient
+			 * msg = new PacketGeneralClient(0);
+			 * msg.setIntArray(ChunkManager.getInstance().toIntArray(name));
+			 * msg.setString(name); EstateAgent.simpleChannel.sendTo(msg,
+			 * MinecraftServer
+			 * .getServer().getConfigurationManager().func_152612_a(name));
+			 */
+			ExtendedPropertyLand property = (ExtendedPropertyLand) player.getExtendedProperties(Strings.extendedPropertiesKey);
+			if (property != null) {
+				String name = player.getCommandSenderName();
+				PacketGeneralClient msg = new PacketGeneralClient(3);
+				msg.setInt(property.getForcableChunks());
+				EstateAgent.simpleChannel.sendTo(msg, MinecraftServer.getServer().getConfigurationManager().func_152612_a(name));
+			}
+		}
 		return super.onItemRightClick(stack, world, player);
 	}
 
 	@Override
 	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) {
 		EntityPlayer player = (EntityPlayer) entityLiving;
+		String name = player.getCommandSenderName();
 		World world = player.worldObj;
 
 		if (!world.isRemote) {
-			ArrayList chunks = ChunkManager.list.get(player.getCommandSenderName());
 			ChunkCoordIntPairWithDimension chunk = new ChunkCoordIntPairWithDimension(world.provider.dimensionId, player.chunkCoordX, player.chunkCoordZ);
 
 			ExtendedPropertyLand property = (ExtendedPropertyLand) player.getExtendedProperties(Strings.extendedPropertiesKey);
-			
+
 			if (property == null)
 				return false;
-			
-			if (!chunks.contains(chunk)) {
-				if (property.getForcableChunks() > chunks.size()) {
-					chunks.add(chunk);
-					ChunkManager.forceChunk(chunk);
-					EstateAgent.chunkSaved.markDirty();
 
-					String name = player.getCommandSenderName();
-					PacketGeneralClient msg = new PacketGeneralClient(0);
-					msg.setIntArray(ChunkManager.toIntArray(name));
-					EstateAgent.simpleChannel.sendTo(msg, MinecraftServer.getServer().getConfigurationManager().func_152612_a(name));
+			if (!ChunkManager.getInstance().contains(name, chunk)) {
+				if (property.getForcableChunks() > ChunkManager.getInstance().sideOfLoadedChunks(name)) {
+					ChunkManager.getInstance().addLoadedChunkForPlayerSynced(name, chunk);
 				}
 			} else {
-				chunks.remove(chunk);
-				ForgeChunkManager.unforceChunk(ChunkManager.tickets.get(chunk.dim), chunk);
-				EstateAgent.chunkSaved.markDirty();
-
-				String name = player.getCommandSenderName();
-				PacketGeneralClient msg = new PacketGeneralClient(0);
-				msg.setIntArray(ChunkManager.toIntArray(name));
-				EstateAgent.simpleChannel.sendTo(msg, MinecraftServer.getServer().getConfigurationManager().func_152612_a(name));
+				ChunkManager.getInstance().removeLoadedChunkForPlayerSynced(name, chunk);
 			}
 		}
 		return true;

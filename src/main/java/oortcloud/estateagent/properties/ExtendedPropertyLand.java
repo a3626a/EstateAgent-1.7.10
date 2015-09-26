@@ -7,7 +7,7 @@ import net.minecraftforge.common.IExtendedEntityProperties;
 
 public class ExtendedPropertyLand implements IExtendedEntityProperties {
 
-	protected static String key = "ExtendedPropertiesHungryAnimal";
+	protected static String key = "ExtendedPropertiesEstateAgent";
 
 	private int forcableChunks;
 
@@ -30,6 +30,10 @@ public class ExtendedPropertyLand implements IExtendedEntityProperties {
 	public void init(Entity entity, World world) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public void setForcableChunks(int value) {
+		forcableChunks=value;
 	}
 	
 	public int getForcableChunks() {

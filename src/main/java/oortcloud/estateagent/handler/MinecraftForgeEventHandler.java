@@ -1,4 +1,4 @@
-package oortcloud.estateagent.hadler;
+package oortcloud.estateagent.handler;
 
 import java.util.ArrayList;
 
@@ -16,6 +16,8 @@ import oortcloud.estateagent.properties.ExtendedPropertyLand;
 
 import org.lwjgl.opengl.GL11;
 
+import com.google.common.collect.ImmutableList;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -32,9 +34,7 @@ public class MinecraftForgeEventHandler {
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 		ItemStack heldItem = player.getHeldItem();
 		if (heldItem != null && (heldItem.getItem() == ModItems.landbook || heldItem.getItem() == ModItems.landdocument)) {
-			ArrayList<ChunkCoordIntPairWithDimension> list = ChunkManager.list.get(player.getCommandSenderName());
-			if (list == null)
-				return;
+			ImmutableList<ChunkCoordIntPairWithDimension> list = ChunkManager.getInstance().getLoadedChunksByPlayerImmutable(player.getCommandSenderName());
 
 			Tessellator tessellator = Tessellator.instance;
 			float partialTickTime = event.partialTicks;
@@ -51,6 +51,7 @@ public class MinecraftForgeEventHandler {
 			GL11.glShadeModel(GL11.GL_SMOOTH);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			GL11.glDepthMask(false);
+			GL11.glDisable(GL11.GL_ALPHA_TEST);
 
 			GL11.glPushMatrix();
 			GL11.glTranslated(-px, 0, -pz);
@@ -67,7 +68,6 @@ public class MinecraftForgeEventHandler {
 					boolean hasChunkNorth = hasChunk(list, dim, i.chunkXPos, i.chunkZPos - 1);
 					boolean hasChunkEast = hasChunk(list, dim, i.chunkXPos + 1, i.chunkZPos);
 					if (!hasChunkNorth) {
-						GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
 						float start = 0;
 						float length = 16;
 						if (!hasChunkWest) {
@@ -78,17 +78,23 @@ public class MinecraftForgeEventHandler {
 							length -= offset;
 						}
 						float dx = length / (float) num;
+						GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
 						for (int j = 0; j <= num; j++) {
-							GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-							GL11.glVertex3d(start + dx * j, -py, offset);
-							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
+							GL11.glVertex3d(start + dx * j, -8, offset);
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.0F);
 							GL11.glVertex3d(start + dx * j, 4 + 4 * Math.sin((4 * Math.PI / 64.0) * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), offset);
 						}
-
+						GL11.glEnd();
+						GL11.glBegin(GL11.GL_QUADS);
+						GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
+						GL11.glVertex3d(start, -py, offset);
+						GL11.glVertex3d(start + length, -py, offset);
+						GL11.glVertex3d(start + length, -8, offset);
+						GL11.glVertex3d(start, -8, offset);
 						GL11.glEnd();
 					}
 					if (!hasChunkEast) {
-						GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
 						float start = 0;
 						float length = 16;
 						if (!hasChunkNorth) {
@@ -99,16 +105,23 @@ public class MinecraftForgeEventHandler {
 							length -= offset;
 						}
 						float dx = length / (float) num;
+						GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
 						for (int j = 0; j <= num; j++) {
-							GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-							GL11.glVertex3d(16 - offset, -py, start + dx * j);
-							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
+							GL11.glVertex3d(16 - offset, -8, start + dx * j);
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.0F);
 							GL11.glVertex3d(16 - offset, 4 + 4 * Math.sin(4 * Math.PI + (4 * Math.PI / 64.0) * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), start + dx * j);
 						}
 						GL11.glEnd();
+						GL11.glBegin(GL11.GL_QUADS);
+						GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
+						GL11.glVertex3d(16 - offset, -py, start);
+						GL11.glVertex3d(16 - offset, -py, start + length);
+						GL11.glVertex3d(16 - offset, -8, start + length);
+						GL11.glVertex3d(16 - offset, -8, start);
+						GL11.glEnd();
 					}
 					if (!hasChunkSouth) {
-						GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
 						float start = 0;
 						float length = 16;
 						if (!hasChunkEast) {
@@ -119,16 +132,23 @@ public class MinecraftForgeEventHandler {
 							length -= offset;
 						}
 						float dx = length / (float) num;
+						GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
 						for (int j = 0; j <= num; j++) {
-							GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-							GL11.glVertex3d(16 - start - dx * j, -py, 16 - offset);
-							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
+							GL11.glVertex3d(16 - start - dx * j, -8, 16 - offset);
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.0F);
 							GL11.glVertex3d(16 - start - dx * j, 4 + 4 * Math.sin(8 * Math.PI + (4 * Math.PI / 64.0) * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 16 - offset);
 						}
 						GL11.glEnd();
+						GL11.glBegin(GL11.GL_QUADS);
+						GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
+						GL11.glVertex3d(16 - start, -py, 16 - offset);
+						GL11.glVertex3d(16 - start - length, -py, 16 - offset);
+						GL11.glVertex3d(16 - start - length, -8, 16 - offset);
+						GL11.glVertex3d(16 - start, -8, 16 - offset);
+						GL11.glEnd();
 					}
 					if (!hasChunkWest) {
-						GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
 						float start = 0;
 						float length = 16;
 						if (!hasChunkSouth) {
@@ -139,12 +159,20 @@ public class MinecraftForgeEventHandler {
 							length -= offset;
 						}
 						float dx = length / (float) num;
+						GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
 						for (int j = 0; j <= num; j++) {
-							GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-							GL11.glVertex3d(offset, -py, 16 - start - dx * j);
-							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
+							GL11.glVertex3d(offset, -8, 16 - start - dx * j);
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.0F);
 							GL11.glVertex3d(offset, 4 + 4 * Math.sin(12 * Math.PI + (4 * Math.PI / 64.0) * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 16 - start - dx * j);
 						}
+						GL11.glEnd();
+						GL11.glBegin(GL11.GL_QUADS);
+						GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
+						GL11.glVertex3d(offset, -py, 16 - start);
+						GL11.glVertex3d(offset, -py, 16 - start - length);
+						GL11.glVertex3d(offset, -8, 16 - start - length);
+						GL11.glVertex3d(offset, -8, 16 - start);
 						GL11.glEnd();
 					}
 					GL11.glPopMatrix();
@@ -154,11 +182,12 @@ public class MinecraftForgeEventHandler {
 
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			GL11.glEnable(GL11.GL_ALPHA_TEST);
 			GL11.glDepthMask(true);
 		}
 	}
 
-	private boolean hasChunk(ArrayList<ChunkCoordIntPairWithDimension> list, int dim, int chunkX, int chunkZ) {
+	private boolean hasChunk(ImmutableList<ChunkCoordIntPairWithDimension> list, int dim, int chunkX, int chunkZ) {
 		for (ChunkCoordIntPairWithDimension i : list) {
 			if (i.dim == dim && i.chunkXPos == chunkX && i.chunkZPos == chunkZ) {
 				return true;

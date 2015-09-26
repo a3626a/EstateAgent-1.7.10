@@ -12,8 +12,8 @@ import oortcloud.estateagent.chunk.ChunkManager;
 import oortcloud.estateagent.chunk.ChunkSavedData;
 import oortcloud.estateagent.command.CommandLandBook;
 import oortcloud.estateagent.core.proxy.CommonProxy;
-import oortcloud.estateagent.hadler.FMLCommonEventHandler;
-import oortcloud.estateagent.hadler.MinecraftForgeEventHandler;
+import oortcloud.estateagent.handler.FMLCommonEventHandler;
+import oortcloud.estateagent.handler.MinecraftForgeEventHandler;
 import oortcloud.estateagent.items.ModItems;
 import oortcloud.estateagent.lib.References;
 import oortcloud.network.HandlerGeneralClient;
@@ -64,7 +64,6 @@ public class EstateAgent {
 	public static void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
 		ModItems.init();
-		ChunkManager.init();
 	}
 
 	@Mod.EventHandler
@@ -84,7 +83,7 @@ public class EstateAgent {
 
 	@EventHandler
 	public void serverLoad(FMLServerStartingEvent event) {
-		ChunkManager.requestTicket();
+		ChunkManager.getInstance().requestTicket();
 		
 		event.registerServerCommand(new CommandLandBook());
 
@@ -98,7 +97,7 @@ public class EstateAgent {
 	
 	@EventHandler
 	public void serverUnload(FMLServerStoppingEvent event) {
-		ChunkManager.init();
+		ChunkManager.getInstance().init();
 	}
 
 }
