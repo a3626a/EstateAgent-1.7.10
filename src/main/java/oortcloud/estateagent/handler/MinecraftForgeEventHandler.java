@@ -63,6 +63,8 @@ public class MinecraftForgeEventHandler {
 				if (i.dim == dim) {
 					GL11.glPushMatrix();
 					GL11.glTranslatef(i.chunkXPos * 16, 0, i.chunkZPos * 16);
+					double temporalFactor = (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0;
+					double spatialFactor = (2 * Math.PI / 64.0);
 					boolean hasChunkSouth = hasChunk(list, dim, i.chunkXPos, i.chunkZPos + 1);
 					boolean hasChunkWest = hasChunk(list, dim, i.chunkXPos - 1, i.chunkZPos);
 					boolean hasChunkNorth = hasChunk(list, dim, i.chunkXPos, i.chunkZPos - 1);
@@ -83,7 +85,7 @@ public class MinecraftForgeEventHandler {
 							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
 							GL11.glVertex3d(start + dx * j, -8, offset);
 							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.0F);
-							GL11.glVertex3d(start + dx * j, 4 + 4 * Math.sin((4 * Math.PI / 64.0) * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), offset);
+							GL11.glVertex3d(start + dx * j, 4 + 3 * Math.sin(spatialFactor * j - temporalFactor) + 1 * Math.sin(2 * spatialFactor * j + 2*temporalFactor) + 4 * Math.sin((1/2) * spatialFactor * j - (1/2)*temporalFactor), offset);
 						}
 						GL11.glEnd();
 						GL11.glBegin(GL11.GL_QUADS);
@@ -110,7 +112,7 @@ public class MinecraftForgeEventHandler {
 							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
 							GL11.glVertex3d(16 - offset, -8, start + dx * j);
 							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.0F);
-							GL11.glVertex3d(16 - offset, 4 + 4 * Math.sin(4 * Math.PI + (4 * Math.PI / 64.0) * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), start + dx * j);
+							GL11.glVertex3d(16 - offset, 4 + 3 * Math.sin(4 * Math.PI + spatialFactor * j - temporalFactor) + 1 * Math.sin(8 * Math.PI + 2 * spatialFactor * j + 2*temporalFactor) + 4 * Math.sin(2 * Math.PI +(1/2) * spatialFactor * j - (1/2)*temporalFactor), start + dx * j);
 						}
 						GL11.glEnd();
 						GL11.glBegin(GL11.GL_QUADS);
@@ -137,7 +139,7 @@ public class MinecraftForgeEventHandler {
 							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
 							GL11.glVertex3d(16 - start - dx * j, -8, 16 - offset);
 							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.0F);
-							GL11.glVertex3d(16 - start - dx * j, 4 + 4 * Math.sin(8 * Math.PI + (4 * Math.PI / 64.0) * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 16 - offset);
+							GL11.glVertex3d(16 - start - dx * j, 4 + 3 * Math.sin(8 * Math.PI + spatialFactor * j - temporalFactor) + 1 * Math.sin(16 * Math.PI + 2 * spatialFactor * j + 2*temporalFactor) + 4 * Math.sin(4 * Math.PI +(1/2) * spatialFactor * j - (1/2)*temporalFactor), 16 - offset);
 						}
 						GL11.glEnd();
 						GL11.glBegin(GL11.GL_QUADS);
@@ -164,7 +166,7 @@ public class MinecraftForgeEventHandler {
 							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
 							GL11.glVertex3d(offset, -8, 16 - start - dx * j);
 							GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.0F);
-							GL11.glVertex3d(offset, 4 + 4 * Math.sin(12 * Math.PI + (4 * Math.PI / 64.0) * j - (Minecraft.getMinecraft().theWorld.getWorldTime() + partialTickTime) / 10.0), 16 - start - dx * j);
+							GL11.glVertex3d(offset, 4 + 3 * Math.sin(12 * Math.PI + spatialFactor * j - temporalFactor) + 1 * Math.sin(24 * Math.PI + 2 * spatialFactor * j + 2*temporalFactor) + 4 * Math.sin(6 * Math.PI +(1/2) * spatialFactor * j - (1/2)*temporalFactor), 16 - start - dx * j);
 						}
 						GL11.glEnd();
 						GL11.glBegin(GL11.GL_QUADS);
