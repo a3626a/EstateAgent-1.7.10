@@ -115,7 +115,7 @@ public class GuiLandBook extends GuiScreen {
 
 		ExtendedPropertyLand property = (ExtendedPropertyLand) Minecraft.getMinecraft().thePlayer.getExtendedProperties(Strings.extendedPropertiesKey);
 		if (property != null)
-			this.fontRendererObj.drawString("Allow Chunks: " + property.getForcableChunks(), zeroX + xSize / 2 + 5, zeroY + ySize - 20, 1);
+			this.fontRendererObj.drawString("Allowed Chunks: " + property.getForcableChunks(), zeroX + xSize / 2 + 5, zeroY + ySize - 20, 1);
 
 		for (int j = 0; j < 8; j++) {
 			if (ChunkManager.getInstance().sideOfLoadedChunks(player) > this.page * 16 + j) {

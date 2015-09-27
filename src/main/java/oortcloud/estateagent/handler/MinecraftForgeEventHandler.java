@@ -32,8 +32,13 @@ public class MinecraftForgeEventHandler {
 		}
 
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-		ItemStack heldItem = player.getHeldItem();
-		if (heldItem != null && (heldItem.getItem() == ModItems.landbook || heldItem.getItem() == ModItems.landdocument)) {
+		
+		boolean landBookInHotBar = false;
+		for (int i = 0 ; i < 9; i++) {
+			ItemStack iItem = player.inventory.getStackInSlot(i);
+			if (iItem!=null&&iItem.getItem()==ModItems.landbook) landBookInHotBar = true;
+		}
+		if (landBookInHotBar) {
 			ImmutableList<ChunkCoordIntPairWithDimension> list = ChunkManager.getInstance().getLoadedChunksByPlayerImmutable(player.getCommandSenderName());
 
 			Tessellator tessellator = Tessellator.instance;

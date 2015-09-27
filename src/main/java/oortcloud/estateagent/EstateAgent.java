@@ -1,8 +1,11 @@
 package oortcloud.estateagent;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -70,6 +73,8 @@ public class EstateAgent {
 	public static void Init(FMLInitializationEvent event) {
 		ForgeChunkManager.setForcedChunkLoadingCallback(EstateAgent.instance, new ChunkLoadingCallback());
 
+		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.landbook), "aaa","aba","aaa", 'a',new ItemStack(Blocks.dirt),'b',new ItemStack(Items.book));
+		
 		simpleChannel = NetworkRegistry.INSTANCE.newSimpleChannel(References.MODNAME);
 		simpleChannel.registerMessage(HandlerGeneralServer.class, PacketGeneralServer.class, 1, Side.SERVER);
 		simpleChannel.registerMessage(HandlerGeneralClient.class, PacketGeneralClient.class, 2, Side.CLIENT);
@@ -85,7 +90,7 @@ public class EstateAgent {
 	public void serverLoad(FMLServerStartingEvent event) {
 		ChunkManager.getInstance().requestTicket();
 		
-		event.registerServerCommand(new CommandLandBook());
+		//event.registerServerCommand(new CommandLandBook());
 
 		MapStorage storage = MinecraftServer.getServer().worldServers[0].perWorldStorage;
 		chunkSaved = (ChunkSavedData) storage.loadData(ChunkSavedData.class, ChunkSavedData.key);
