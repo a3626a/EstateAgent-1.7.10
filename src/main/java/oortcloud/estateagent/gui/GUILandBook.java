@@ -114,8 +114,13 @@ public class GuiLandBook extends GuiScreen {
 		ImmutableList<ChunkCoordIntPairWithDimension> chunks = ChunkManager.getInstance().getLoadedChunksByPlayerImmutable(player);
 
 		ExtendedPropertyLand property = (ExtendedPropertyLand) Minecraft.getMinecraft().thePlayer.getExtendedProperties(Strings.extendedPropertiesKey);
-		if (property != null)
-			this.fontRendererObj.drawString("Allowed Chunks: " + property.getForcableChunks(), zeroX + xSize / 2 + 5, zeroY + ySize - 20, 1);
+		if (property != null) {
+			if (property.getForcableChunks() != Integer.MAX_VALUE) {
+				this.fontRendererObj.drawString("Allowed Chunks: " + property.getForcableChunks(), zeroX + xSize / 2 + 5, zeroY + ySize - 20, 1);
+			} else {
+				this.fontRendererObj.drawString("Opped Player", zeroX + xSize / 2 + 5, zeroY + ySize - 20, 1);
+			}
+		}
 
 		for (int j = 0; j < 8; j++) {
 			if (ChunkManager.getInstance().sideOfLoadedChunks(player) > this.page * 16 + j) {

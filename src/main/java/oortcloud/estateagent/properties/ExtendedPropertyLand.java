@@ -1,6 +1,9 @@
 package oortcloud.estateagent.properties;
 
+import oortcloud.estateagent.util.PlayerUtil;
+import net.minecraft.command.ICommand;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
@@ -10,7 +13,8 @@ public class ExtendedPropertyLand implements IExtendedEntityProperties {
 	protected static String key = "ExtendedPropertiesEstateAgent";
 
 	private int forcableChunks;
-
+	EntityPlayer player;
+	
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {
 		NBTTagCompound tag = new NBTTagCompound();
@@ -28,8 +32,7 @@ public class ExtendedPropertyLand implements IExtendedEntityProperties {
 
 	@Override
 	public void init(Entity entity, World world) {
-		// TODO Auto-generated method stub
-
+		player = (EntityPlayer)entity;
 	}
 	
 	public void setForcableChunks(int value) {
@@ -37,6 +40,9 @@ public class ExtendedPropertyLand implements IExtendedEntityProperties {
 	}
 	
 	public int getForcableChunks() {
+		if (PlayerUtil.getInstance().hasPlayerPermission(player, 4)) {
+			return Integer.MAX_VALUE;
+		}
 		return forcableChunks;
 	}
 
