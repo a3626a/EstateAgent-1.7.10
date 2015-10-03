@@ -1,5 +1,8 @@
 package oortcloud.estateagent.properties;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import oortcloud.estateagent.handler.FMLCommonEventHandler;
 import oortcloud.estateagent.util.PlayerUtil;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.Entity;
@@ -14,7 +17,7 @@ public class ExtendedPropertyLand implements IExtendedEntityProperties {
 
 	private int forcableChunks;
 	EntityPlayer player;
-	
+
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {
 		NBTTagCompound tag = new NBTTagCompound();
@@ -26,28 +29,29 @@ public class ExtendedPropertyLand implements IExtendedEntityProperties {
 	public void loadNBTData(NBTTagCompound compound) {
 		NBTTagCompound tag = (NBTTagCompound) compound.getTag(key);
 		if (tag != null) {
-			forcableChunks=tag.getInteger("forcableChunks");
+			forcableChunks = tag.getInteger("forcableChunks");
 		}
 	}
 
 	@Override
 	public void init(Entity entity, World world) {
-		player = (EntityPlayer)entity;
+		player = (EntityPlayer) entity;
 	}
-	
+
 	public void setForcableChunks(int value) {
-		forcableChunks=value;
+		forcableChunks = value;
 	}
-	
+
 	public int getForcableChunks() {
-		if (PlayerUtil.getInstance().hasPlayerPermission(player, 4)) {
-			return Integer.MAX_VALUE;
-		}
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+			if (PlayerUtil.getInstance().hasPlayerPermission(player, 4)) {
+				return Integer.MAX_VALUE;
+			}
 		return forcableChunks;
 	}
 
 	public void incForcableChunks() {
 		forcableChunks++;
 	}
-	
+
 }

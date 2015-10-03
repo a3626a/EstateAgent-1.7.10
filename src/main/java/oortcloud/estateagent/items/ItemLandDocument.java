@@ -72,6 +72,10 @@ public class ItemLandDocument extends Item {
 		if (property.getForcableChunks() == stack.getItemDamage()) {
 			property.incForcableChunks();
 			stack.stackSize--;
+			if (stack.stackSize==0) {
+				player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+				return stack;
+			}
 			return stack;
 		} else {
 			return stack;
