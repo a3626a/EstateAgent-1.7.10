@@ -56,7 +56,7 @@ public class ChunkManager {
 		return chunksPerPlayers.values();
 	}
 
-	protected ArrayList<ChunkCoordIntPairWithDimension> getLoadedChunksByPlayer(String player) {
+	private ArrayList<ChunkCoordIntPairWithDimension> getLoadedChunksByPlayer(String player) {
 		ArrayList<ChunkCoordIntPairWithDimension> ret = chunksPerPlayers.get(player);
 		if (ret == null) {
 			ret = new ArrayList<ChunkCoordIntPairWithDimension>();
@@ -64,11 +64,6 @@ public class ChunkManager {
 			return ret;
 		}
 		return ret;
-	}
-
-	@SideOnly(Side.CLIENT)
-	public ImmutableList<ChunkCoordIntPairWithDimension> getLoadedChunksByPlayerImmutable(String player) {
-		return ImmutableList.copyOf(getLoadedChunksByPlayer(player));
 	}
 
 	public boolean addLoadedChunkForPlayer(String player, ChunkCoordIntPairWithDimension chunk, boolean markDirty) {
@@ -125,7 +120,7 @@ public class ChunkManager {
 		return getLoadedChunksByPlayer(player).contains(chunk);
 	}
 
-	public int sideOfLoadedChunks(String player) {
+	public int sizeOfLoadedChunks(String player) {
 		return getLoadedChunksByPlayer(player).size();
 	}
 

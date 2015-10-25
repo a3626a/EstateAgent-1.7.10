@@ -1,6 +1,7 @@
 package oortcloud.estateagent.handler;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -9,14 +10,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import oortcloud.estateagent.chunk.ChunkCoordIntPairWithDimension;
-import oortcloud.estateagent.chunk.ChunkManager;
+import oortcloud.estateagent.chunk.ChunkRenderingManager;
 import oortcloud.estateagent.items.ModItems;
 import oortcloud.estateagent.lib.Strings;
 import oortcloud.estateagent.properties.ExtendedPropertyLand;
 
 import org.lwjgl.opengl.GL11;
-
-import com.google.common.collect.ImmutableList;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -39,7 +38,7 @@ public class MinecraftForgeEventHandler {
 			if (iItem!=null&&iItem.getItem()==ModItems.landbook) landBookInHotBar = true;
 		}
 		if (landBookInHotBar) {
-			ImmutableList<ChunkCoordIntPairWithDimension> list = ChunkManager.getInstance().getLoadedChunksByPlayerImmutable(player.getCommandSenderName());
+			CopyOnWriteArrayList<ChunkCoordIntPairWithDimension> list = ChunkRenderingManager.getInstance().chunks;
 
 			Tessellator tessellator = Tessellator.instance;
 			float partialTickTime = event.partialTicks;
@@ -194,7 +193,7 @@ public class MinecraftForgeEventHandler {
 		}
 	}
 
-	private boolean hasChunk(ImmutableList<ChunkCoordIntPairWithDimension> list, int dim, int chunkX, int chunkZ) {
+	private boolean hasChunk(CopyOnWriteArrayList<ChunkCoordIntPairWithDimension> list, int dim, int chunkX, int chunkZ) {
 		for (ChunkCoordIntPairWithDimension i : list) {
 			if (i.dim == dim && i.chunkXPos == chunkX && i.chunkZPos == chunkZ) {
 				return true;
