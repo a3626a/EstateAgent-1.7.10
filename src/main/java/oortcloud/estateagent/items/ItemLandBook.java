@@ -28,6 +28,7 @@ public class ItemLandBook extends Item {
 		this.setCreativeTab(CreativeTabs.tabAllSearch);
 		this.setUnlocalizedName(References.RESOURCESPREFIX + Strings.itemLandBookName);
 		this.setCreativeTab(EstateAgent.tab);
+		this.setMaxStackSize(1);
 		ModItems.register(this);
 	}
 
